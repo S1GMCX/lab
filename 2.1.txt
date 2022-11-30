@@ -1,0 +1,111 @@
+#include <Windows.h> 
+
+#include <stdio.h> 
+
+#include <stdlib.h> 
+
+#include <time.h> 
+
+const int N = 2000;
+
+int a[N][N], b[N][N], c[N][N], elem_c, p = N;
+
+int main(void)
+
+{
+
+	SetConsoleCP(1251);
+
+	SetConsoleOutputCP(1251);
+
+	setvbuf(stdin, NULL, _IONBF, 0);
+
+	setvbuf(stdout, NULL, _IONBF, 0);
+
+
+
+	clock_t start, stop; // объявляем переменные для определения времени выполнения 
+
+
+
+	int i = 0, j = 0, r;
+
+	double result;
+
+	srand(time(NULL)); // инициализируем параметры генератора случайных чисел 
+
+	while (i < p)
+
+	{
+
+		while (j < p)
+
+		{
+
+			a[i][j] = rand() % 100 + 1; // заполняем массив случайными числами 
+
+			j++;
+
+		}
+
+		i++;
+
+	}
+
+	srand(time(NULL)); // инициализируем параметры генератора случайных чисел 
+
+	i = 0; j = 0;
+
+	while (i < p)
+
+	{
+
+		while (j < p)
+
+		{
+
+			b[i][j] = rand() % 100 + 1; // заполняем массив случайными числами 
+
+			j++;
+
+		}
+
+		i++;
+
+	}
+
+	start = clock();
+
+	for (i = 0; i < p; i++)
+
+	{
+
+		for (j = 0; j < p; j++)
+
+		{
+
+			elem_c = 0;
+
+			for (r = 0; r < p; r++)
+
+			{
+
+				elem_c = elem_c + a[i][r] * b[r][j];
+
+				c[i][j] = elem_c;
+
+			}
+
+		}
+
+	}
+
+	stop = clock();
+
+	result = (double)(stop - start) / 1000;
+
+	printf("Затраченное время: %.3f секунд\n ", result);
+
+	return(0);
+
+}
