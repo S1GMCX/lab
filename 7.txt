@@ -1,0 +1,85 @@
+#include <ctime>
+#include <stack>
+#include <iostream>
+#include "windows.h"
+
+using namespace std;
+
+
+//граф  | посещ.вершины |кол-во вершин |данная вершина
+void DFS(int** arr, int* visited, int size, int top) {
+
+	if (visited[top] == 1) return; // если вершина уже посещена
+	visited[top] = 1;  // если не посещена то отмечаем как посещенную
+	cout << top << ' ';
+
+	for (int i = 0; i != size; i++) {
+		if (arr[top][i] == 1 && visited[i] != 1) { // если нашли ребро с вершиной, которая еще не посещена
+			DFS(arr, visited, size, i); // вызываем функцию для это вершины
+		}
+	}
+}
+
+
+// функция вызывает DFS для каждой вершины графа
+void vivod(int** arr, int size, int i = 0) {
+
+	if (i == size) return; // конец функции
+
+	cout << endl << "Обход с вершины " << i << endl << endl;
+
+	int* visited = new int[size];
+	for (int i = 0; i != size; i++) visited[i] = 0; // хранит посещенные вершины
+
+	DFS(arr, visited, size, i);
+
+	vivod(arr, size, ++i); // рекурсивный вызов для след. вершины
+}
+
+
+int main()
+{
+	setlocale(LC_ALL, "RUS"); 
+	srand(time(NULL));        
+
+
+	int** arr; //граф
+	int size;  //размер
+
+	cout << "Введите кол-во вершин: ";
+	cin >> size;
+	arr = new int* [size];
+
+	for (int i = 0; i < size; i++) {
+		arr[i] = new int[size]; // создаем массивы для нашей матрицы
+		for (int j = 0; j < size; j++) {
+			arr[i][j] = 0; // заполняем матрицу 0
+		}
+	}
+
+	for (int i = 0; i < size; i++) {
+		for (int j = i + 1; j < size; j++) {
+
+			int r = rand() % 100;
+
+			if (r > 60) {
+				arr[i][j] = 1;
+				arr[j][i] = 1;
+			}
+		}
+	}
+
+
+
+	for (int i = 0; i < size; i++) {
+		for (int j = 0; j < size; j++) {
+			cout << arr[i][j] << ' ';
+		}
+		cout << endl;
+	}
+
+	vivod(arr, size, 0);
+
+	cout << "Конец" << endl;
+	return 0;
+}
