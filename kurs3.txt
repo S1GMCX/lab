@@ -1,0 +1,185 @@
+#include <ctime>
+#include <stack>
+#include <iostream>
+#include <fstream>
+#include "windows.h"
+
+using namespace std;
+
+
+
+void DFS(int** arr, int* visited, int size, int top) {
+
+	if (visited[top] == 1) return; 
+	visited[top] = 1;  
+	cout << top << ' ';
+
+	for (int i = 0; i != size; i++) {
+		if (arr[top][i] != 0 && visited[i] != 1) { 
+			DFS(arr, visited, size, i); 
+		}
+	}
+}
+
+
+void vivod(int** arr, int size, int i = 0) {
+
+	if (i == size) return; 
+
+	cout << endl << "Обход с вершины " << i << endl << endl;
+
+	int* visited = new int[size];
+	for (int i = 0; i != size; i++) visited[i] = 0; 
+
+	DFS(arr, visited, size, i);
+
+	vivod(arr, size, ++i); 
+}
+
+
+int main()
+{
+	setlocale(LC_ALL, "RUS"); 
+	srand(time(NULL));        
+
+
+	int** arr; 
+	int size; 
+	int flag;  
+	int flag2; 
+	ifstream b; 
+
+	cout << "Как создать массив?" << endl;
+	cout << "2 - читать из файла | 1 - вручную | 0 - случайно сгенерировать" << endl;
+	while (true) {
+		cin >> flag;
+		if ((flag != 2 && flag != 1 && flag != 0) || cin.fail()) {
+			cin.clear();
+			cin.ignore();
+			cout << "Попробуйте снова" << endl;
+			continue;
+		}
+		break;
+	}
+
+	if (flag != 2) {
+		while (true) {
+			cout << "Введите кол-во вершин: ";
+			cin >> size;
+			if (size <= 0 || size > 100 || cin.fail()) {
+				cin.clear();
+				cin.ignore();
+				cout << "Попробуйте снова" << endl;
+				continue;
+			}
+			break;
+		}
+	}
+	else {
+		b.open("ddd.txt");
+		if (b.fail()) {
+			cout << "Ошибка открытия файла" << endl;
+			return 0;
+		}
+		b >> size;
+	}
+
+	arr = new int* [size];
+
+	cout << "Нужно ли сохранить данные в файл?" << endl;
+	cout << "1 - да | 0 - нет" << endl;
+	while (true) {
+		cin >> flag2;
+		if (flag2 != 1 && flag2 != 0 || cin.fail()) {
+			cin.clear();
+			cin.ignore();
+			cout << "Попробуйте снова" << endl;
+			continue;
+		}
+		break;
+	}
+
+	ofstream a; 
+	if (flag2 == 1) {
+		a.open("ddd.txt");
+		a << size << endl;
+	}
+
+
+	for (int i = 0; i < size; i++) {
+		arr[i] = new int[size]; 
+		for (int j = 0; j < size; j++) {
+			arr[i][j] = 0; 
+		}
+	}
+
+	if (flag == 0) {
+		for (int i = 0; i < size; i++) {
+			for (int j = i + 1; j < size; j++) {
+
+				int r = rand() % 100;
+
+				if (r > 60) {
+					arr[i][j] = 1;
+					arr[j][i] = 1;
+				}
+			}
+		}
+	}
+	else if (flag == 1) {
+
+		int i = 0;
+
+		while (i != size) {
+
+			int k = 0;
+			cout << "Вершина " << i << endl << endl;
+
+			cout << "Введите вершину для ребра " << i << endl;
+			cout << "Или введте -1 чтобы закончить" << endl;
+			cout << i << '-';
+			cin >> k;
+
+			if (cin.fail()) {
+				cin.clear();
+				cin.ignore();
+				continue;
+			}
+
+			if (k == -1) {
+				i++;
+				continue;
+			}
+			if (k == i || k < 0 || k >= size) {
+				cout << endl << "Вы ввели неправильное значение попробуйте снова" << endl;
+				continue;
+			}
+
+			arr[i][k] = 1;
+			arr[k][i] = 1;
+		}
+	}
+	else {
+		for (int i = 0; i != size; i++) {
+			for (int j = 0; j != size; j++) {
+				b >> arr[i][j];
+			}
+		}
+	}
+
+	for (int i = 0; i < size; i++) {
+		for (int j = 0; j < size; j++) {
+			if (flag2 == 1) a << arr[i][j] << ' ';
+			cout << arr[i][j] << ' ';
+		}
+		if (flag2 == 1) a << endl;
+		cout << endl;
+	}
+
+	vivod(arr, size, 0);
+
+	cout << endl << "Работа завершена" << endl;
+
+	if (flag2 == 1) a.close();
+	return 0;
+}
